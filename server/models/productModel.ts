@@ -1,6 +1,13 @@
-const { Schema, model } = require('mongoose');
+import { Schema, model } from 'mongoose';
 
-const ProductSchema = new Schema({
+export interface IProduct {
+    name: string;
+    description: string;
+    price: number;
+    image_URL: string;
+}
+
+const ProductSchema = new Schema<IProduct>({
     name: {
         type: String,
         required: true,
@@ -19,5 +26,5 @@ const ProductSchema = new Schema({
     }
 }, { timestamps: true });
 
-const Product = model("Product", ProductSchema);
-module.exports = { Product };
+const Product = model<IProduct>("Product", ProductSchema);
+export default Product;

@@ -1,14 +1,7 @@
-import { useAppConfig } from 'nuxt/app';
 import mongoose from 'mongoose';
 
-const config = useAppConfig();
-
-const dbUrl = config;
-mongoose.connect(dbUrl, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
-
+const {db_url} = useRuntimeConfig();
+mongoose.connect(db_url);
 mongoose.Promise = global.Promise
 
 // Export Mongoose connection
@@ -19,3 +12,5 @@ const db = {
   product: require('./productModel').default,
   checkoutSession: require('./checkoutSessionModel').default,
 }
+
+export default db;

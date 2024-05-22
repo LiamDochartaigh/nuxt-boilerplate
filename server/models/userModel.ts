@@ -1,6 +1,21 @@
-const { Schema, model } = require('mongoose');
+import { Schema, model } from 'mongoose';
 
-const UserSchema = new Schema({
+export interface IUser {
+  authType: string;
+  email: string;
+  password: string;
+  role: string;
+  email_confirmed: boolean;
+  confirmation_token?: string;
+  confirmation_token_expires?: Date;
+  access_token: string;
+  refresh_token: string;
+  password_reset_token?: string;
+  password_reset_expires?: Date;
+  user_avatar_URL: string;
+}
+
+const UserSchema = new Schema<IUser>({
   authType: {
     type: String,
     default: "local",
@@ -71,5 +86,5 @@ UserSchema.set('toJSON', {
   }
 });
 
-const User = model("User", UserSchema);
-module.exports = { User };
+const User = model<IUser>("User", UserSchema);
+export default User;

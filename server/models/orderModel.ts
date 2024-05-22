@@ -1,6 +1,27 @@
-const { Schema, model } = require('mongoose');
+import { Schema, model } from 'mongoose';
 
-const OrderSchema = new Schema({
+export interface IOrderProduct {
+    product_ID: Schema.Types.ObjectId;
+    name: string;
+    quantity: number;
+    unit_Price: number;
+}
+
+export interface IOrder {
+    user_Id: Schema.Types.ObjectId;
+    customer_email: string;
+    products: IOrderProduct[];
+    order_Total: number;
+    purchase_Date: Date;
+    status: string;
+    payment_Method: string;
+    internal_Session_ID: string;
+    stripe_Session_ID: string;
+    notes: string;
+    currency: string;
+}
+
+const OrderSchema = new Schema<IOrder>({
     user_Id: {
         type: Schema.Types.ObjectId,
         ref: 'User',
@@ -83,5 +104,6 @@ OrderSchema.set('toJSON', {
   });
   
 
-const Order = model("Order", OrderSchema);
-module.exports = { Order };
+const Order = model<IOrder>("Order", OrderSchema);
+
+export { Order };

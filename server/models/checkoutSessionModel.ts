@@ -1,7 +1,12 @@
-import {Enums} from 'mailgun.js';
 import { Schema, model } from 'mongoose';
 
-const CheckoutSessionSchema = new Schema({
+export interface ICheckoutSession {
+    user_Id: Schema.Types.ObjectId;
+    status: string;
+    session_type: string;
+}
+
+const CheckoutSessionSchema = new Schema<ICheckoutSession>({
     user_Id: {
         type: Schema.Types.ObjectId,
         ref: 'User',
@@ -21,5 +26,10 @@ const CheckoutSessionSchema = new Schema({
     },
 }, { timestamps: true });
 
-const CheckoutSession = model("CheckoutSession", CheckoutSessionSchema);
-module.exports = { CheckoutSession };
+const CheckoutSession = model<ICheckoutSession>("CheckoutSession", CheckoutSessionSchema);
+
+export default CheckoutSession;
+
+export {
+    CheckoutSession
+}
