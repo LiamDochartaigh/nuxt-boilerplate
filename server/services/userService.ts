@@ -1,26 +1,39 @@
-const { User } = require("../models/userModel");
-const {
+import { UserType, User } from "../models/userModel";
+import {
   GenerateJWT,
   GenerateRefreshToken,
   GenerateEmailResetToken,
   VerifyPassword,
-  HashPassword
- } = require("./authService");
-const { sendConfirmationEmail, sendPasswordResetEmail, sendWelcomeEmail} = require("./emailService");
-const crypto = require("crypto");
+  HashPassword,
+} from "./authService";
+import {
+  sendConfirmationEmail,
+  sendPasswordResetEmail,
+  sendWelcomeEmail,
+} from "./emailService";
+import crypto from "crypto";
 
-async function RegisterUser(email, password) {
+export async function RegisterUser(email: string, password: string) {
   let user = await GetUserByEmail(email);
-  if (user) { throw new Error("User already exists"); }
+  if (user) {
+    throw new Error("User already exists");
+  }
   const hashedPassword = await HashPassword(password);
-  user = await User.create({ email, password: hashedPassword, authType: "local"});
+  user = await User.create({
+    email,
+    password: hashedPassword,
+    authType: "local",
+  });
   await SendEmailConfirmation(user);
   await sendWelcomeEmail(user.email);
   await AuthenticateUser(user);
   return user;
 }
 
-async function RegisterOrLoginGoogleUser(email, picture) {
+export async function RegisterOrLoginGoogleUser(
+  email: string,
+  picture: string
+) {
   let user = await GetUserByEmail(email);
 
   //Convert existing user to google user
@@ -28,11 +41,16 @@ async function RegisterOrLoginGoogleUser(email, picture) {
     user.user_avatar_URL = picture;
     user.authType = "google";
     user.email_confirmed = true;
-    user.password = '';
+    user.password = "";
     await user.save();
-  }//No existing user
-  else if(!user) {
-    user = await User.create({ email, user_avatar_URL: picture, email_confirmed: true, authType: "google"});
+  } //No existing user
+  else if (!user) {
+    user = await User.create({
+      email,
+      user_avatar_URL: picture,
+      email_confirmed: true,
+      authType: "google",
+    });
     await sendWelcomeEmail(user.email);
   }
 
@@ -40,61 +58,85 @@ async function RegisterOrLoginGoogleUser(email, picture) {
   return user;
 }
 
-async function SendEmailConfirmation(user) {
-  if (!user) { throw new Error("Invalid User") }
-  if (user.email_confirmed) { throw new Error("Email already confirmed"); }
+export async function SendEmailConfirmation(user: UserType) {
+  if (!user) {
+    throw new Error("Invalid User");
+  }
+  if (user.email_confirmed) {
+    throw new Error("Email already confirmed");
+  }
   // If the ten minutes have not passed since the last confirmation email was sent
-  if (user.confirmation_token_expires - (3300000) > Date.now()) { throw new Error("Confirmation token already sent") }
+  if (
+    user.confirmation_token_expires &&
+    user.confirmation_token_expires.getTime() - 3300000 > Date.now()
+  ) {
+    throw new Error("Confirmation token already sent");
+  }
 
-  const confirmationToken = crypto.randomBytes(20).toString('hex');
+  const confirmationToken = crypto.randomBytes(20).toString("hex");
   user.confirmation_token = confirmationToken;
-  user.confirmation_token_expires = Date.now() + 3600000;
+  user.confirmation_token_expires = new Date(Date.now() + 3600000);
   await user.save();
-  await sendConfirmationEmail(
-    user.email,
-    confirmationToken);
+  await sendConfirmationEmail(user.email, confirmationToken);
 }
 
-async function ActivateAccount(token) {
-  const user = await User.findOne({ confirmation_token: token, confirmation_token_expires: { $gt: Date.now() } });
-  if (!user) { throw new Error('Invalid token or token expired') }
+export async function ActivateAccount(token: string) {
+  const user = await User.findOne({
+    confirmation_token: token,
+    confirmation_token_expires: { $gt: Date.now() },
+  });
+  if (!user) {
+    throw new Error("Invalid token or token expired");
+  }
   user.email_confirmed = true;
-  user.confirmation_token = '';
-  user.confirmation_token_expires = '';
+  user.confirmation_token = "";
+  user.confirmation_token_expires = undefined;
   await user.save();
 }
 
-async function ValidateUser(accessToken) {
+export async function ValidateUser(accessToken: string) {
   let user = await User.findOne({ access_token: accessToken });
-  if (user) { return user; }
+  if (user) {
+    return user;
+  }
 }
 
-async function RefreshUser(refreshToken) {
+export async function RefreshUser(refreshToken: string) {
   const user = await User.findOne({ refresh_token: refreshToken });
-  if (!user) { throw new Error('Invalid Access or Refresh token'); }
+  if (!user) {
+    throw new Error("Invalid Access or Refresh token");
+  }
   await AuthenticateUser(user);
   return user;
 }
 
-async function AuthenticateUser(user) {
-  if (!user || !user._id || !user.save) { throw new Error("User not found"); }
+export async function AuthenticateUser(user: UserType) {
+  if (!user || !user._id || !user.save) {
+    throw new Error("User not found");
+  }
   const jwt = GenerateJWT(user.id);
   const refreshToken = GenerateRefreshToken();
   await SetUsersRefreshToken(user, refreshToken);
   await SetUsersAccessToken(user, jwt);
 }
 
-async function LogInUser(email, password) {
+export async function LogInUser(email: string, password: string) {
   const user = await GetUserByEmail(email);
-  if (!user) { throw new Error("User not found"); }
-  if(user.authType !== "local") { throw new Error("Non native user"); }
+  if (!user) {
+    throw new Error("User not found");
+  }
+  if (user.authType !== "local") {
+    throw new Error("Non native user");
+  }
   const passwordMatch = await VerifyPassword(password, user.password);
-  if (!passwordMatch) { throw new Error("Invalid password"); }
+  if (!passwordMatch) {
+    throw new Error("Invalid password");
+  }
   await AuthenticateUser(user);
   return user;
 }
 
-async function LogOutUser(user) {
+export async function LogOutUser(user: UserType) {
   if (!user || !user._id || !user.save) {
     throw new Error("User not found");
   }
@@ -102,16 +144,16 @@ async function LogOutUser(user) {
   await DeleteUsersRefreshToken(user);
 }
 
-async function GetUserByEmail(email) {
+export async function GetUserByEmail(email: string) {
   const user = await User.findOne({ email: email });
   return user;
 }
 
-async function GetUserById(id) {
+export async function GetUserById(id: string) {
   return await User.findById(id);
 }
 
-async function SetUsersRefreshToken(user, token) {
+export async function SetUsersRefreshToken(user: UserType, token: string) {
   if (!user || !user._id || !user.save) {
     throw new Error("User not found");
   }
@@ -119,7 +161,7 @@ async function SetUsersRefreshToken(user, token) {
   await user.save();
 }
 
-async function DeleteUsersRefreshToken(user) {
+export async function DeleteUsersRefreshToken(user: UserType) {
   if (!user || !user._id || !user.save) {
     throw new Error("User not found");
   }
@@ -127,7 +169,7 @@ async function DeleteUsersRefreshToken(user) {
   await user.save();
 }
 
-async function DeleteUsersAccessToken(user) {
+export async function DeleteUsersAccessToken(user: UserType) {
   if (!user || !user._id || !user.save) {
     throw new Error("User not found");
   }
@@ -135,7 +177,7 @@ async function DeleteUsersAccessToken(user) {
   await user.save();
 }
 
-async function SetUsersAccessToken(user, token) {
+export async function SetUsersAccessToken(user: UserType, token: string) {
   if (!user || !user._id || !user.save) {
     throw new Error("User not found");
   }
@@ -143,38 +185,56 @@ async function SetUsersAccessToken(user, token) {
   await user.save();
 }
 
-async function ResetUserPasswordRequest(email) {
+export async function ResetUserPasswordRequest(email: string) {
   const user = await GetUserByEmail(email);
-  if (!user || !user._id || !user.save) { throw new Error("User not found"); }
-  if(user.authType !== 'local'){throw new Error("Non Local User Cannot Reset Password");}
+  if (!user || !user._id || !user.save) {
+    throw new Error("User not found");
+  }
+  if (user.authType !== "local") {
+    throw new Error("Non Local User Cannot Reset Password");
+  }
   // If the five minutes have not passed since the last password reset email was sent
-  if (user.password_reset_expires - (900000) > Date.now()) { throw new Error("Password reset token already sent") }
+  if (
+    user.password_reset_expires &&
+    user.password_reset_expires.getTime() - 900000 > Date.now()
+  ) {
+    throw new Error("Password reset token already sent");
+  }
 
   const resetToken = GenerateEmailResetToken();
   user.password_reset_token = resetToken;
-  user.password_reset_expires = Date.now() + 1200000;
+  user.password_reset_expires = new Date(Date.now() + 1200000);
   await sendPasswordResetEmail(user.email, resetToken);
   await user.save();
 }
 
-async function ValidatePasswordResetToken(token) {
-  const user = await User.findOne({ password_reset_token: token, password_reset_expires: { $gt: Date.now() } });
-  if (!user) { throw new Error('Invalid token or token expired'); }
+export async function ValidatePasswordResetToken(token: string) {
+  const user = await User.findOne({
+    password_reset_token: token,
+    password_reset_expires: { $gt: Date.now() },
+  });
+  if (!user) {
+    throw new Error("Invalid token or token expired");
+  }
   return user;
 }
 
-async function ChangePassword(token, password) {
-  const user = await User.findOne({ password_reset_token: token, password_reset_expires: { $gt: Date.now() } });
-  if (!user) { throw new Error('Invalid token or token expired'); }
+export async function ChangePassword(token: string, password: string) {
+  const user = await User.findOne({
+    password_reset_token: token,
+    password_reset_expires: { $gt: Date.now() },
+  });
+  if (!user) {
+    throw new Error("Invalid token or token expired");
+  }
   const hashedPassword = await HashPassword(password);
   user.password = hashedPassword;
   user.password_reset_token = "";
-  user.password_reset_expires = "";
-  user.password_reset_token_createdAt = "";
+  user.password_reset_expires = undefined;
   await user.save();
 }
 
-module.exports = {
+export default {
   RegisterUser,
   LogOutUser,
   ActivateAccount,
@@ -187,5 +247,5 @@ module.exports = {
   GetUserByEmail,
   SendEmailConfirmation,
   RegisterOrLoginGoogleUser,
-  GetUserById
+  GetUserById,
 };

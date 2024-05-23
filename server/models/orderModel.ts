@@ -1,14 +1,14 @@
 import { Schema, model } from 'mongoose';
 
-export interface IOrderProduct {
-    product_ID: Schema.Types.ObjectId;
+interface IOrderProduct {
+    product_ID: string;
     name: string;
     quantity: number;
     unit_Price: number;
 }
 
 export interface IOrder {
-    user_Id: Schema.Types.ObjectId;
+    user_Id: string;
     customer_email: string;
     products: IOrderProduct[];
     order_Total: number;
@@ -21,9 +21,9 @@ export interface IOrder {
     currency: string;
 }
 
-const OrderSchema = new Schema<IOrder>({
+const OrderSchema = new Schema<OrderType>({
     user_Id: {
-        type: Schema.Types.ObjectId,
+        type: String,
         ref: 'User',
         required: true,
     },
@@ -104,6 +104,7 @@ OrderSchema.set('toJSON', {
   });
   
 
-const Order = model<IOrder>("Order", OrderSchema);
+export type OrderType = IOrder & Document;
+const Order = model<OrderType>("Order", OrderSchema);
 
 export { Order };

@@ -1,12 +1,12 @@
 import { Schema, model } from 'mongoose';
 
-export interface ICheckoutSession {
+interface ICheckoutSession {
     user_Id: Schema.Types.ObjectId;
     status: string;
     session_type: string;
 }
 
-const CheckoutSessionSchema = new Schema<ICheckoutSession>({
+const CheckoutSessionSchema = new Schema<CheckoutSessionType>({
     user_Id: {
         type: Schema.Types.ObjectId,
         ref: 'User',
@@ -26,7 +26,8 @@ const CheckoutSessionSchema = new Schema<ICheckoutSession>({
     },
 }, { timestamps: true });
 
-const CheckoutSession = model<ICheckoutSession>("CheckoutSession", CheckoutSessionSchema);
+export type CheckoutSessionType = ICheckoutSession & Document;
+const CheckoutSession = model<CheckoutSessionType>("CheckoutSession", CheckoutSessionSchema);
 
 export default CheckoutSession;
 

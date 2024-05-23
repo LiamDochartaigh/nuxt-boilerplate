@@ -1,14 +1,15 @@
-const { Product } = require('../models/productModel');
-const mongoose = require('mongoose');
+import { Product } from '../models/productModel';
+import mongoose from 'mongoose';
 
-async function GetProduct(id) {
+export async function GetProduct(id: string) {
     if (mongoose.Types.ObjectId.isValid(id)) {
         return await Product.findById(id);
     } else {
         throw new Error('Invalid Product ID');
     }
 }
-async function GetProducts() {
+
+export async function GetProducts() {
     return await Product.find();
 }
 

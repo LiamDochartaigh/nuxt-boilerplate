@@ -1,6 +1,6 @@
-import { Schema, model } from 'mongoose';
+import { Schema, model, Document } from 'mongoose';
 
-export interface IUser {
+interface IUser{
   authType: string;
   email: string;
   password: string;
@@ -15,7 +15,7 @@ export interface IUser {
   user_avatar_URL: string;
 }
 
-const UserSchema = new Schema<IUser>({
+const UserSchema = new Schema<UserType>({
   authType: {
     type: String,
     default: "local",
@@ -86,5 +86,6 @@ UserSchema.set('toJSON', {
   }
 });
 
-const User = model<IUser>("User", UserSchema);
+export type UserType = IUser & Document;
+export const User = model<UserType>("User", UserSchema);
 export default User;
