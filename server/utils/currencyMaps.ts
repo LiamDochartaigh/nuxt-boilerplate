@@ -1,4 +1,4 @@
-export default function CurrencyToSymbolMap(currency: string) {
+export function CurrencyToSymbolMap(currency: string) {
     switch (currency) {
         case "usd":
             return "$";

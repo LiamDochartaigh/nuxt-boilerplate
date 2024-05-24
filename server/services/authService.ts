@@ -5,13 +5,20 @@ const saltRounds = 10;
 
 const config = useRuntimeConfig();
 
+interface CookieOptions{
+    maxAge: number;
+    httpOnly: boolean;
+    secure: boolean;
+    sameSite: boolean | "strict" | "lax" | "none";
+}
+
 export function DefaultCookie(age: number) {
     return {
         maxAge: age,
         httpOnly: true,
         secure: true,
         sameSite: 'strict'
-    }
+    } as CookieOptions;
 }
 
 export function GenerateJWT(userID: string) {

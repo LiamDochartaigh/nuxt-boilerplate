@@ -1,6 +1,5 @@
 import formData from 'form-data';
 import Mailgun from 'mailgun.js';
-import CurrencyToSymbolMap from  '../util/currencyMaps';
 import {IOrder} from '../models/orderModel';
 
 const config = useRuntimeConfig();

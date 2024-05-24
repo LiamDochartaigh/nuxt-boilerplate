@@ -1,16 +1,6 @@
 import { UserType, User } from "../models/userModel";
-import {
-  GenerateJWT,
-  GenerateRefreshToken,
-  GenerateEmailResetToken,
-  VerifyPassword,
-  HashPassword,
-} from "./authService";
-import {
-  sendConfirmationEmail,
-  sendPasswordResetEmail,
-  sendWelcomeEmail,
-} from "./emailService";
+import { GenerateJWT, GenerateRefreshToken, GenerateEmailResetToken, VerifyPassword, HashPassword } from "./authService";
+import { sendConfirmationEmail, sendPasswordResetEmail, sendWelcomeEmail } from "./emailService";
 import crypto from "crypto";
 
 export async function RegisterUser(email: string, password: string) {
@@ -30,10 +20,7 @@ export async function RegisterUser(email: string, password: string) {
   return user;
 }
 
-export async function RegisterOrLoginGoogleUser(
-  email: string,
-  picture: string
-) {
+export async function RegisterOrLoginGoogleUser(email: string, picture: string) {
   let user = await GetUserByEmail(email);
 
   //Convert existing user to google user
@@ -66,10 +53,7 @@ export async function SendEmailConfirmation(user: UserType) {
     throw new Error("Email already confirmed");
   }
   // If the ten minutes have not passed since the last confirmation email was sent
-  if (
-    user.confirmation_token_expires &&
-    user.confirmation_token_expires.getTime() - 3300000 > Date.now()
-  ) {
+  if (user.confirmation_token_expires && user.confirmation_token_expires.getTime() - 3300000 > Date.now()) {
     throw new Error("Confirmation token already sent");
   }
 
@@ -194,10 +178,7 @@ export async function ResetUserPasswordRequest(email: string) {
     throw new Error("Non Local User Cannot Reset Password");
   }
   // If the five minutes have not passed since the last password reset email was sent
-  if (
-    user.password_reset_expires &&
-    user.password_reset_expires.getTime() - 900000 > Date.now()
-  ) {
+  if (user.password_reset_expires && user.password_reset_expires.getTime() - 900000 > Date.now()) {
     throw new Error("Password reset token already sent");
   }
 
