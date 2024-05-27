@@ -1,7 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   devtools: { enabled: true },
-  modules: ["nuxt-mongoose"],
   runtimeConfig: {
     client_url: process.env.CLIENT_URL,
     env: process.env.ENV,

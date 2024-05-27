@@ -1,4 +1,5 @@
-import { sign, verify, Secret } from 'jsonwebtoken';
+import jsonwebtoken from 'jsonwebtoken';
+const { sign, verify } = jsonwebtoken;
 import { randomBytes } from 'crypto';
 import  bcrypt from 'bcrypt';
 const saltRounds = 10;
@@ -25,7 +26,7 @@ export function GenerateJWT(userID: string) {
     const payload = {
         id: userID
     };
-    const secret: Secret = config.jwt_secret;
+    const secret = config.jwt_secret;
     const options = {
         expiresIn: '15m',
     };
@@ -38,7 +39,7 @@ export function GenerateRefreshToken() {
 }
 
 export function VerifyToken(token: string) {
-    const secret: Secret = config.jwt_secret;
+    const secret = config.jwt_secret;
     return verify(token, secret);
 }
 

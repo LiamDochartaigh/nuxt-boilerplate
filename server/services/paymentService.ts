@@ -1,5 +1,5 @@
 import Stripe from 'stripe'
-import { IUser } from '../models/userModel';
+import { UserType } from '../models/userModel';
 import { CreateOrder } from './orderService';
 import { CreateCheckoutSession, CloseCheckoutSession } from '../services/checkoutSessionService';
 import {GetUserById} from '../services/userService';
@@ -14,11 +14,11 @@ export interface IStripeLineItem{
     product: IProduct
 }
 
-async function StripeCheckoutSession(user: IUser, lineItems: IStripeLineItem[],
+export async function StripeCheckoutSession(user: UserType, lineItems: IStripeLineItem[],
      successURL: string, cancelURL: string) {
     
     //Create internal checkout session that we can use to track the order
-    const internalSession = await CreateCheckoutSession(user._id, "stripe")
+    const internalSession = await CreateCheckoutSession(user.id, "stripe")
     
     const line_items = lineItems.map((lineItem) => {
         return {
@@ -43,7 +43,7 @@ async function StripeCheckoutSession(user: IUser, lineItems: IStripeLineItem[],
         metadata: {
             internal_session_id: internalSession.id.toString()
         },
-        client_reference_id: user._id,
+        client_reference_id: user.id.toString(),
         customer_email: user.email,
         line_items: line_items,
         mode: 'payment',
@@ -56,7 +56,7 @@ async function StripeCheckoutSession(user: IUser, lineItems: IStripeLineItem[],
     return session;
 }
 
-async function StripeCheckoutComplete(requestBody: string, signature: string) {
+export async function StripeCheckoutComplete(requestBody: string, signature: string) {
     let event;
     const webhookSecret = config.stripe_webhook_secret;
     event = stripe.webhooks.constructEvent(requestBody, signature, webhookSecret);
@@ -87,6 +87,7 @@ async function StripeCheckoutComplete(requestBody: string, signature: string) {
 
         const sessionID = retrievedSession.metadata?.internal_session_id;
         if(!sessionID) { throw new Error("Internal session ID not found") }
+        if(!retrievedSession.client_reference_id) { throw new Error("Client reference ID not found") }
 
         await CloseCheckoutSession(sessionID);
         const user = await GetUserById(retrievedSession.client_reference_id);
