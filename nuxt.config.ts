@@ -1,5 +1,7 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+  modules: ['./modules/mongoose'],
+  mongoose: { uri: process.env.DB_URL },
   devtools: { enabled: true },
   runtimeConfig: {
     client_url: process.env.CLIENT_URL,

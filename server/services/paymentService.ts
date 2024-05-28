@@ -113,7 +113,7 @@ export async function StripeCheckoutComplete(requestBody: string, signature: str
     }
 }
 
-module.exports = {
+export default{
     StripeCheckoutSession,
     StripeCheckoutComplete
 }

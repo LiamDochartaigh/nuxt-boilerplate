@@ -10,6 +10,7 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@nuxt/kit": "^3.11.2",
     "bcrypt": "^5.1.1",
     "google-auth-library": "^9.10.0",
     "jsonwebtoken": "^9.0.2",
