@@ -21,16 +21,17 @@ export default defineEventHandler(async (event) => {
       body: user,
     };
   } catch (error) {
+    console.log(error);
     if (error instanceof zod.ZodError) {
       console.error("Validation error:", error.errors);
       const validationErrors = error.errors.map((err) => err.message).join(", ");
-      createError({ statusCode: 400, statusMessage: validationErrors });
+      setResponseStatus(event, 400, validationErrors);
     } else if (error instanceof Error) {
       console.error("Unexpected error:", error);
-      createError({ statusCode: 401, statusMessage: "An error occured. Please Try Again Later." });
+      setResponseStatus(event, 401, "An error occured. Please Try Again Later.");
     } else {
       console.error("Unexpected error:", error);
-      return createError({ statusCode: 500, statusMessage: "Internal Server Error" });
+      setResponseStatus(event, 500, "Internal Server Error. Please Try Again Later.");
     }
   }
 });

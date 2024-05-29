@@ -1,15 +1,11 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  modules: ['./modules/mongoose'],
-  mongoose: { uri: process.env.DB_URL },
   devtools: { enabled: true },
   runtimeConfig: {
-    client_url: process.env.CLIENT_URL,
-    env: process.env.ENV,
+    env_status: process.env.ENV,
     organization_name: process.env.ORGANIZATION_NAME,
     db_url: process.env.DB_URL,
     db_name: process.env.DB_NAME,
-    hash_secret: process.env.HASH_SECRET,
     jwt_secret: process.env.JWT_SECRET,
     mailgun_api_key: process.env.MAILGUN_API_KEY,
     mailgun_domain: process.env.MAILGUN_DOMAIN,

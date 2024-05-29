@@ -47,7 +47,6 @@ export function GenerateEmailResetToken() {
     return randomBytes(20).toString('hex');
 }
 
-
 export async function HashPassword(password: string) {
     try {
         const hash = await bcrypt.hash(password, saltRounds);
