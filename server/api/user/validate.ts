@@ -1,3 +1,4 @@
+import { create } from "domain";
 
 export default defineEventHandler({
   onRequest: authAPI,
@@ -8,10 +9,7 @@ export default defineEventHandler({
         body: event.context.user,
       };
     } else {
-      return {
-        statusCode: 401,
-        body: "Unauthorized User",
-      };
+      throw createError({ statusCode: 401, statusMessage: "Unauthorized User" });
     }
   },
 });

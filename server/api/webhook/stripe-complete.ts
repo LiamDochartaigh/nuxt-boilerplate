@@ -3,7 +3,7 @@ import { StripeCheckoutComplete } from "~/server/services/paymentService";
 export default defineEventHandler(async (event) => {
     try{
         const signature = getHeader(event, "stripe-signature");
-        if(!signature) { throw new Error("No signature provided") }
+        if(!signature) { throw createError({ statusCode: 400, message: "Validation Error" }); }
         const body = readRawBody(event).toString();
         await StripeCheckoutComplete(body, signature);
         return {statusCode: 200}

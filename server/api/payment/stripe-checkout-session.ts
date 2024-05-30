@@ -6,7 +6,7 @@ import { H3Error } from "h3";
 
 const productSchema = zod.object({
   product_id: zod.string().min(1, { message: "Product ID must be a string" }),
-  product_quantity: zod.number().int().positive({ message: "Product quantity must be a positive integer" }),
+  quantity: zod.number().int().positive({ message: "Product quantity must be a positive integer" }),
 });
 
 const validateStripeCheckout = zod.object({
