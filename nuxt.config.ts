@@ -1,6 +1,22 @@
-// https://nuxt.com/docs/api/configuration/nuxt-config
+import vuetify, { transformAssetUrls } from "vite-plugin-vuetify";
+
 export default defineNuxtConfig({
   devtools: { enabled: true },
+  modules: [
+    (_options, nuxt) => {
+      nuxt.hooks.hook("vite:extendConfig", (config) => {
+        // @ts-expect-error
+        config.plugins.push(vuetify({ autoImport: true }));
+      });
+    },
+  ],
+  vite: {
+    vue: {
+      template: {
+        transformAssetUrls,
+      },
+    },
+  },
   runtimeConfig: {
     env_status: process.env.ENV,
     organization_name: process.env.ORGANIZATION_NAME,
@@ -14,6 +30,6 @@ export default defineNuxtConfig({
     google_client_secret: process.env.GOOGLE_CLIENT_SECRET,
     google_redirect_uri: process.env.GOOGLE_REDIRECT_URI,
     stripe_secret_key: process.env.STRIPE_SECRET_KEY,
-    stripe_webhook_secret: process.env.STRIPE_WEBHOOK_SECRET
+    stripe_webhook_secret: process.env.STRIPE_WEBHOOK_SECRET,
   },
-})
+});

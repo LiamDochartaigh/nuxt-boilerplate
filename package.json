@@ -10,6 +10,7 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@mdi/font": "^7.4.47",
     "@nuxt/kit": "^3.11.2",
     "bcrypt": "^5.1.1",
     "google-auth-library": "^9.10.0",
@@ -26,6 +27,8 @@
     "@types/bcrypt": "^5.0.2",
     "@types/jsonwebtoken": "^9.0.6",
     "@types/node": "^20.12.12",
-    "typescript": "^5.4.5"
+    "typescript": "^5.4.5",
+    "vite-plugin-vuetify": "^2.0.3",
+    "vuetify": "^3.6.8"
   }
 }
