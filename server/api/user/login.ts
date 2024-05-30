@@ -1,6 +1,7 @@
 import zod from "zod";
 import { DefaultCookie } from "~/server/services/authService";
 import userService from "~/server/services/userService";
+import { H3Error } from "h3";
 
 const validateUserLogIn = zod.object({
   email: zod.string().email("Email must be a valid email address"),
@@ -20,16 +21,15 @@ export default defineEventHandler(async (event) => {
       body: user,
     };
   } catch (error) {
-    if (error instanceof zod.ZodError) {
-      console.error("Validation error:", error.errors);
-      const validationErrors = error.errors.map((err) => err.message).join(", ");
-      createError({ statusCode: 400, statusMessage: validationErrors });
+    if (error instanceof H3Error) {
+      console.error("Validation error:", error.data);
+      throw createError({ statusCode: 400, statusMessage: error.statusMessage });
     } else if (error instanceof Error) {
       console.error("Unexpected error:", error);
-      createError({ statusCode: 401, statusMessage: "Invalid Email or Password. Please Try Again." });
+      throw createError({ statusCode: 401, statusMessage: "Invalid Email or Password. Please Try Again." });
     } else {
       console.error("Unexpected error:", error);
-      createError({ statusCode: 500, statusMessage: "Internal Server Error" });
+      throw createError({ statusCode: 500, statusMessage: "Internal Server Error" });
     }
   }
 });

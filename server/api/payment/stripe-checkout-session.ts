@@ -2,6 +2,7 @@ import zod from "zod";
 import { IProduct } from "~/server/models/productModel";
 import { IStripeLineItem, StripeCheckoutSession } from "~/server/services/paymentService";
 import { GetProduct } from "~/server/services/productService";
+import { H3Error } from "h3";
 
 const productSchema = zod.object({
   product_id: zod.string().min(1, { message: "Product ID must be a string" }),
@@ -41,15 +42,15 @@ export default defineEventHandler({
         body: stripeSession.url,
       };
     } catch (e) {
-      if (e instanceof zod.ZodError) {
-        console.error("Error Validating Stripe Checkout Request:", e.errors);
-        createError({ statusCode: 400, message: "An error occured. Please Try Again Later." });
+      if (e instanceof H3Error) {
+        console.error("Validation Error", e.data);
+        throw createError({status: e.statusCode, message: e.statusMessage});
       } else if (e instanceof Error) {
         console.error("Error Initiating Stripe Checkout:", e.message);
-        createError({ statusCode: 401, message: "An error occured. Please Try Again Later." });
+        throw createError({status: 401, message: "An error occured. Please Try Again Later."});
       } else {
         console.error("Unexpected error:", e);
-        createError({ statusCode: 500, message: "An error occured. Please Try Again Later." });
+        throw createError({status: 500, message: "Internal Server Error."});
       }
     }
   },

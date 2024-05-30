@@ -10,7 +10,7 @@ export default defineEventHandler({
       return { statusCode: 200 };
     } catch (e) {
       console.error("Unexpected error:", e);
-      createError({ statusCode: 500, statusMessage: "Internal Server Error" });
+      throw createError({ statusCode: 500, statusMessage: "Internal Server Error" });
     }
   },
 });

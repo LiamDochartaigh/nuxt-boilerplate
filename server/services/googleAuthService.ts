@@ -24,6 +24,8 @@ export async function AuthGoogle(code: string) {
     const email = payload['email'];
     const picture = payload['picture'];
 
+    if(!email || !picture) throw new Error("Invalid Google Payload");
+
     const user = RegisterOrLoginGoogleUser(email, picture);
     return user;
 }

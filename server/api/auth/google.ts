@@ -1,6 +1,7 @@
 import zod from "zod";
 import { AuthGoogle } from "~/server/services/googleAuthService";
 import { DefaultCookie } from "~/server/services/authService";
+import { H3Error } from "h3";
 
 const validateAuthGoogle = zod.object({
   code: zod.string().min(1, { message: "Code is required" }),
@@ -14,16 +15,15 @@ export default defineEventHandler(async (event) => {
     setCookie(event, "refresh-token", user.refresh_token, DefaultCookie(7 * 24 * 60 * 60 * 1000));
     return { statusCode: 200, body: user };
   } catch (e) {
-    if (e instanceof zod.ZodError) {
-      const validationErrors = e.errors.map((err) => err.message).join(", ");
-      console.error("Validation error:", validationErrors);
-      createError({ statusCode: 400, statusMessage: "An error occured. Please Try Again Later." });
+    if (e instanceof H3Error) {
+      console.error("Validation error:", e.data);
+      throw createError({status: e.statusCode, message: e.statusMessage});
     } else if (e instanceof Error) {
       console.error("Error Authorising User:", e.message);
-      createError({ statusCode: 401, statusMessage: "An error occured. Please Try Again Later." });
+      throw createError({status: 401, message: "An error occured. Please Try Again Later."});
     } else {
       console.error("Unexpected error:", e);
-      createError({ statusCode: 500, statusMessage: "Internal Server Error" });
+      throw createError({status: 500, message: "Internal Server Error."});
     }
   }
 });

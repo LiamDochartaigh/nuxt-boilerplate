@@ -1,6 +1,7 @@
 import zod from "zod";
 import userService from "~/server/services/userService";
 import { DefaultCookie } from "~/server/services/authService";
+import { H3Error } from 'h3';
 
 const validateRegisterUser = zod.object({
   email: zod.string().email({ message: "Email must be a valid email address" }).min(1, { message: "Email is required" }),
@@ -20,18 +21,17 @@ export default defineEventHandler(async (event) => {
       statusCode: 201,
       body: user,
     };
-  } catch (error) {
-    console.log(error);
-    if (error instanceof zod.ZodError) {
-      console.error("Validation error:", error.errors);
-      const validationErrors = error.errors.map((err) => err.message).join(", ");
-      setResponseStatus(event, 400, validationErrors);
+  } catch (error: any) {
+
+    if (error instanceof H3Error) {
+      console.error("Validation error:", error.data);
+      throw createError({status: error.statusCode, message: error.statusMessage});
     } else if (error instanceof Error) {
       console.error("Unexpected error:", error);
-      setResponseStatus(event, 401, "An error occured. Please Try Again Later.");
+      throw createError({ statusCode: 401, statusMessage: "An error occured. Please Try Again Later." });
     } else {
       console.error("Unexpected error:", error);
-      setResponseStatus(event, 500, "Internal Server Error. Please Try Again Later.");
+      throw createError({ statusCode: 500, statusMessage: "Internal Server Error." });
     }
   }
 });

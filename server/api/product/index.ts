@@ -10,10 +10,10 @@ export default defineEventHandler(async (event) => {
   } catch (e) {
     if (e instanceof Error) {
       console.error("Error Retrieving Products: ", e.message);
-      createError({ statusCode: 400, message: "An Error Occured. Please Try Again." });
+      throw createError({status: 400, message: "An error occured. Please Try Again Later."});
     } else {
       console.error("Unexpected error:", e);
-      createError({ statusCode: 500, message: "An Error Occured. Please Try Again." });
+      throw createError({status: 500, message: "Internal Server Error."});
     }
   }
 });
