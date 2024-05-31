@@ -1,8 +1,8 @@
 <template>
   <div>
-    <v-dialog v-model="dialog" scrollable max-width="800" style="{max-height: 600px;}">
-      <template v-slot:activator="{ on, attrs }">
-        <v-btn class="hvr-shrink pl-5 pr-5" x-large rounded color="primary" v-bind="attrs" v-on="on">
+    <v-dialog v-model="dialog" scrollable max-width="800" :style="{'max-height': '600px'}">
+      <template v-slot:activator="{ props }">
+        <v-btn class="hvr-shrink pl-5 pr-5" x-large rounded color="primary" v-bind="props">
           Choose Icon
         </v-btn>
       </template>
@@ -29,9 +29,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, defineEmits} from "vue";
 import Fuse from "fuse.js";
-import {AppIcon, panelIcons} from '../util/AppIcons'
 
 const dialog = ref(false);
 

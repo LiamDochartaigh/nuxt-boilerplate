@@ -51,10 +51,12 @@ import { onMounted, ref, type Ref } from "vue";
 import userService from "../services/userService";
 import LoadingScreen from "~/components/LoadingScreen.vue";
 import { VForm } from "vuetify/components";
+
+const router = useRouter();
+const route = useRoute();
+
 const isLoading = ref(true);
-
 const passwordResetValid = ref(false);
-
 const showNewPassword = ref(false);
 const showPasswordConfirmation = ref(false);
 const newPassword = ref("");
@@ -63,9 +65,7 @@ const passwordResetForm: Ref<InstanceType<typeof VForm> | null> = ref(null);
 const token = ref("");
 const error = ref(false);
 const sendingRequest = ref(false);
-
 const passwordRules = [(v: string) => !!v || "Password is required", (v: string) => v.length >= 8 || "Password must be at least 8 characters"];
-
 const confirmPasswordRules = [(v: string) => v === newPassword.value || "Passwords do not match"];
 
 const passwordChangeSubmit = async () => {
@@ -82,17 +82,17 @@ const passwordChangeSubmit = async () => {
   if (!response) {
     error.value = true;
   } else {
-    router.push({ name: "login" });
+    router.push({ path: "/login" });
   }
 };
 
 onMounted(async () => {
   isLoading.value = true;
-  token.value = router.currentRoute.value.query.token?.toString() || "";
+  token.value = route.query.token?.toString() || "";
   const response = await userService.validatePasswordResetToken(token.value);
   isLoading.value = false;
   if (!response) {
-    router.replace({ name: "password-recovery", query: { error: "invalidToken" } });
+    router.replace({ path: "password-recovery", query: { error: "invalidToken" } });
   }
 });
 </script>

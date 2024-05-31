@@ -7,14 +7,14 @@
         </v-col>
         <v-col cols="12" sm="6">
             <v-select :items="googleFonts" :value="value" @input="$emit('input', GetFont($event))" item-text="family">
-                <template #item="{ item, on, attrs }">
-                    <v-list-item :style="{ fontFamily: `${item.family}, ${item.category}` }" v-bind="attrs" v-on="on">
-                        {{ item.family }}
+                <template #item="{ item, props }">
+                    <v-list-item :style="{ fontFamily: `${item.raw.family}, ${item.raw.category}` }" v-bind="props">
+                        {{ item.raw.family }}
                     </v-list-item>
                 </template>
                 <template #selection="{ item }">
-                    <span :style="{ fontFamily: `${item.family}, ${item.category}` }">
-                        {{ item.family }}
+                    <span :style="{ fontFamily: `${item.raw.family}, ${item.raw.category}` }">
+                        {{ item.raw.family }}
                     </span>
                 </template>
             </v-select>
@@ -24,7 +24,6 @@
 
 <script setup lang="ts">
 import fonts from "../assets/fonts.json";
-import { defineEmits, defineProps, onMounted, ref } from "vue";
 const googleFonts = fonts.map((font) => ({ family: font.family, category: font.category, variants: font.variants }));
 
 const fontsString = ref("");

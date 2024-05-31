@@ -18,7 +18,7 @@ export default defineEventHandler(async (event) => {
 
     return {
       statusCode: 200,
-      body: user,
+      user: user,
     };
   } catch (error) {
     if (error instanceof H3Error) {

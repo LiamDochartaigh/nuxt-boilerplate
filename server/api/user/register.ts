@@ -19,7 +19,7 @@ export default defineEventHandler(async (event) => {
 
     return {
       statusCode: 201,
-      body: user,
+      user: user,
     };
   } catch (error: any) {
 

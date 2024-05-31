@@ -10,7 +10,6 @@ export async function GetProduct(id: string) {
 }
 
 export async function GetProducts() {
-    console.log(mongoose.connection.host)
     return await Product.find();
 }
 

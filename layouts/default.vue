@@ -6,9 +6,9 @@
 
     <v-app-bar clipped-left app class="pl-3 pr-3">
       <slot name="prepend"></slot>
-      <router-link :to="RouteIdentifier.Home.path">
+      <NuxtLink to="/home">
         <v-img alt="Logo" class="shrink" contain :src="logo" transition="scale-transition" width="40" />
-      </router-link>
+      </NuxtLink>
 
       <v-spacer></v-spacer>
 
@@ -71,8 +71,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from "vue";
-import { MoveRoute, RouteIdentifier } from "../router";
+import { computed } from "vue";
 import logo from "../assets/Logo.png";
 import defaultAvatar from "../assets/default_avatar.webp";
 import userService from "../services/userService";
@@ -85,6 +84,7 @@ const organizationName = import.meta.env.VITE_APP_ORGANIZATION_NAME;
 const authStore = useUserStore();
 const isLoggedIn = computed(() => authStore.isLoggedIn);
 const user = computed(() => authStore.user);
+const router = useRouter();
 
 const userAvatar = computed(() => {
   if (user.value?.user_avatar_URL) {
@@ -96,7 +96,7 @@ const userAvatar = computed(() => {
 const logOutAction = async function () {
   const loggedOut = await userService.logOutUser();
   if (loggedOut) {
-    MoveRoute(RouteIdentifier.Home);
+    router.push({ path: '/home' });
   }
 };
 

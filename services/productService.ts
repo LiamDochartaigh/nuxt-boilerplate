@@ -1,6 +1,5 @@
 import { baseAXios } from "../services/axiosService";
 import { IsDefined } from 'class-validator';
-import { validateAndTransform } from '../util/dataValidation';
 
 export class Product {
     @IsDefined()
@@ -25,10 +24,10 @@ export class Product {
 
 export async function getProducts() {
     try {
-        const response = await baseAXios.get(`/product/`);
-        if (response && response.status == 200 && response.data) {
+        const { data } = await useFetch(`/api/product/`);
+        if (data.value && data.value.products) {
             const products: Product[] = await Promise.all(
-                response.data.map(async (product: Product) => {
+                data.value.products.map(async (product) => {
                     const transformedProduct = await validateAndTransform(Product, product as Product);
                     return transformedProduct;
                 })

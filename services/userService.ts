@@ -1,8 +1,7 @@
-import { baseAXios } from './axiosService';
 import { useUserStore, useUIStore } from '../store';
 import { IsDefined } from 'class-validator';
-import { validateAndTransform } from '../util/dataValidation';
 import { authGoogle } from './authService';
+import { Body } from '#build/components';
 
 export class User {
   @IsDefined()
@@ -21,14 +20,14 @@ export class User {
 
 async function registerUser(email: string, password: string) {
   try {
-    const response = await baseAXios.post(`/user/register`, {
-      email: email,
-      password: password
+    const { data } = await useFetch(`/api/user/register`, {
+      method: 'POST',
+      body: { email, password }
     });
-    if (response && response.status == 201) {
-      const user = await validateAndTransform(User, response.data as User);
+    if (data.value && data.value?.user) {
+      const user = await validateAndTransform(User, data.value.user as User);
       useUserStore().logIn(user);
-      return response;
+      return user;
     }
   }
   catch (e: any) {
@@ -39,15 +38,15 @@ async function registerUser(email: string, password: string) {
 async function loginUser(email: string, password: string) {
   try {
 
-    const response = await baseAXios.post(`/user/login`, {
-      email: email,
-      password: password
+    const { data } = await useFetch(`/api/user/login`, {
+      method: 'POST',
+      body: { email, password }
     });
 
-    if (response && response.status == 200) {
-      const user = await validateAndTransform(User, response.data as User);
+    if (data.value && data.value.user) {
+      const user = await validateAndTransform(User, data.value.user as User);
       useUserStore().logIn(user);
-      return response;
+      return user;
     }
   }
   catch (e: any) {
@@ -72,9 +71,9 @@ export async function loginGoogleUser(code: string) {
 async function logOutUser() {
   try {
     useUIStore().showLoading();
-    const response = await baseAXios.get(`/user/logout`);
+    const { data } = await useFetch(`/api/user/logout`);
     useUIStore().hideLoading();
-    if (response && response.status == 200) {
+    if (data.value && data.value.statusCode == 200) {
       useUserStore().logOut();
       return true;
     }
@@ -89,10 +88,10 @@ async function logOutUser() {
 async function validateUser() {
   try {
     useUIStore().showLoading();
-    const response = await baseAXios.get(`/user/validate`);
+    const { data } = await useFetch(`/api/user/validate`);
     useUIStore().hideLoading();
-    if (response && response.status == 200) {
-      const user = await validateAndTransform(User, response.data as User);
+    if (data.value && data.value.user) {
+      const user = await validateAndTransform(User, data.value.user as User);
       useUserStore().logIn(user);
       return true;
     }

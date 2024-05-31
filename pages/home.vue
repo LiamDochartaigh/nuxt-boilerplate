@@ -1,5 +1,4 @@
 <template>
-  <DefaultLayout>
     <div class="text-center">
       <h1 class="text-h3 font-weight-bold mb-3">Home Page</h1>
       <p class="text-subtitle-1 font-weight-regular">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
@@ -13,11 +12,9 @@
         <v-card-subtitle>{{ product.description }}</v-card-subtitle>
       </v-card>
     </v-row>
-  </DefaultLayout>
 </template>
 
 <script setup lang="ts">
-import DefaultLayout from "../layouts/DefaultLayout.vue";
 import { onMounted, ref } from 'vue';
 import { Product, getProducts } from "../services/productService";
 import { initiateStripePurchase } from "../services/paymentService";

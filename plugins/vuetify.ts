@@ -6,12 +6,12 @@ import colors from "vuetify/util/colors";
 import { fa } from "vuetify/iconsets/fa";
 import { aliases, mdi } from "vuetify/iconsets/mdi";
 import "@mdi/font/css/materialdesignicons.css";
-import "@fortawesome/fontawesome-free/css/all.css";
 
 export default defineNuxtPlugin((app) => {
   const vuetify = createVuetify({
     components,
     directives,
+    ssr: true,
     icons: {
       defaultSet: "mdi",
       aliases: {

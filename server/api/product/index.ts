@@ -5,7 +5,7 @@ export default defineEventHandler(async (event) => {
     const products = await GetProducts();
     return {
       statusCode: 200,
-      body: products,
+      products: products,
     };
   } catch (e) {
     if (e instanceof Error) {

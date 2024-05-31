@@ -47,7 +47,6 @@
 </template>
 
 <script setup lang="ts">
-import { ref, Ref } from "vue";
 import { VForm } from "vuetify/components";
 import userService from "../services/userService";
 import LoadingScreen from "../components/LoadingScreen.vue";

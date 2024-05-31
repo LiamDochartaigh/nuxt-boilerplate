@@ -1,9 +1,9 @@
 <template>
-  <DashboardLayout>
-    <span>Aight</span>
-  </DashboardLayout>
+  <span>Aight</span>
 </template>
 
 <script setup lang="ts">
-import DashboardLayout from '../layouts/dashboard.vue';
+definePageMeta({
+  layout: 'dashboard'
+})
 </script>

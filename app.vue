@@ -1,5 +1,3 @@
 <template>
-  <div>
-    <p>COOOM</p>
-  </div>
+    <NuxtPage />
 </template>

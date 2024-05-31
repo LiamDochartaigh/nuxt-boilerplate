@@ -16,7 +16,6 @@
 
 <script setup lang=ts>
 import { notificationTypes, Hexeum_Notification } from '../services/notificationService';
-import { defineProps, onMounted, PropType, ref} from 'vue';
 
 const props = defineProps({
     notificationsList: Array as PropType<Hexeum_Notification[]>

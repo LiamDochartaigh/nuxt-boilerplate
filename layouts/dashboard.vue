@@ -6,7 +6,7 @@
     <v-flex>
       <v-navigation-drawer v-model="drawer" :mobile-breakpoint="mobileBreakpoint" clipped app>
         <v-list nav>
-          <v-list-item @click="MoveRoute(item.nav)" :value="selectMenuItem" v-for="(item) in menuItems" :key="item.title"
+          <v-list-item @click="router.push({path: item.path})" :value="selectMenuItem" v-for="(item) in menuItems" :key="item.title"
             link>
             <v-row>
               <v-col cols="2"><v-icon>{{ item.icon }}</v-icon></v-col>

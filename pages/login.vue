@@ -1,12 +1,9 @@
 <template>
-    <DefaultLayout>
-            <LoginForm />
-    </DefaultLayout>
+  <LoginForm />
 </template>
 
 <script setup lang="ts">
-import LoginForm from '../components/LoginForm.vue'
-import DefaultLayout from "../layouts/DefaultLayout.vue";
+import LoginForm from "../components/LoginForm.vue";
 </script>
 
 <style></style>

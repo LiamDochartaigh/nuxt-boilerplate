@@ -20,9 +20,6 @@
 </template>
 
 <script setup lang="ts">
-
-import { ref, defineEmits } from "vue";
-
 const uploadedIcon = ref("")
 const uploadIcon = ref();
 const currentError = ref("");

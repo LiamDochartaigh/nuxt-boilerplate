@@ -16,8 +16,8 @@
         :close-on-content-click="false"
         v-on:input="ValidateColor"
       >
-        <template v-slot:activator="{on}">
-          <div :style="swatchStyle" v-on="on" />
+        <template v-slot:activator="{props}">
+          <div :style="swatchStyle" v-bind="props"/>
         </template>
         <v-card>
           <v-card-text class="pa-0">
@@ -30,8 +30,6 @@
 </template>
 
 <script setup lang="ts">
-import { computed, defineEmits, defineProps, ref} from 'vue';
-
 let menu = false;
 
 const props = defineProps({

@@ -52,13 +52,12 @@
 
 <script setup lang="ts">
 
-import { ref, Ref } from "vue"
 import { VForm } from "vuetify/components"
 import userService from '../services/userService';
 import LoadingScreen from '../components/LoadingScreen.vue';
-import router from "../router";
 import GoogleLoginButton from "./GoogleLoginButton.vue";
 
+const router = useRouter();
 const loginError = ref(false);
 const loginValid = ref(false);
 const loginEmail = ref('');
@@ -87,7 +86,7 @@ const loginSubmit = async () => {
     sendingRequest.value = false;
     if (!response) { loginError.value = true; }
     else {
-        router.push({ name: 'home' });
+        router.push({ path: '/home' });
     }
 };
 
