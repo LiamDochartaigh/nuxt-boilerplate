@@ -12,8 +12,9 @@ export default defineEventHandler({
     try {
       const body = await readValidatedBody(event, validateCreateOrder.parse);
       const user = event.context.user;
-      const order = await GetOrderBySessionID(body.checkout_session_id, user._id);
-      return { statusCode: 200, body: order };
+      if(!user) { throw createError({ statusCode: 401, statusMessage: "Unauthorized User" }); }
+      const order = await GetOrderBySessionID(body.checkout_session_id, user.id);
+      return { statusCode: 200, order: order };
     } catch (e) {
       if (e instanceof H3Error) {
         console.error("Validation Error:", e.data);

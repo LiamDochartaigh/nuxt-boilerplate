@@ -1,4 +1,3 @@
-import { baseAXios } from "../services/axiosService";
 import { IsDefined } from 'class-validator';
 
 export class Product {

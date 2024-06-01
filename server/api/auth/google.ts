@@ -13,7 +13,7 @@ export default defineEventHandler(async (event) => {
     const user = await AuthGoogle(body.code);
     setCookie(event, "access-token", user.access_token, DefaultCookie(15 * 60 * 1000));
     setCookie(event, "refresh-token", user.refresh_token, DefaultCookie(7 * 24 * 60 * 60 * 1000));
-    return { statusCode: 200, body: user };
+    return { statusCode: 200, user: user };
   } catch (e) {
     if (e instanceof H3Error) {
       console.error("Validation error:", e.data);

@@ -1,7 +1,6 @@
-import { useUserStore, useUIStore } from '../store';
-import { IsDefined } from 'class-validator';
-import { authGoogle } from './authService';
-import { Body } from '#build/components';
+import { useUserStore, useUIStore } from "../store";
+import { IsDefined } from "class-validator";
+import { authGoogle } from "./authService";
 
 export class User {
   @IsDefined()
@@ -21,26 +20,24 @@ export class User {
 async function registerUser(email: string, password: string) {
   try {
     const { data } = await useFetch(`/api/user/register`, {
-      method: 'POST',
-      body: { email, password }
+      method: "POST",
+      body: { email, password },
     });
     if (data.value && data.value?.user) {
       const user = await validateAndTransform(User, data.value.user as User);
       useUserStore().logIn(user);
       return user;
     }
-  }
-  catch (e: any) {
+  } catch (e: any) {
     console.error(e.message);
   }
 }
 
 async function loginUser(email: string, password: string) {
   try {
-
     const { data } = await useFetch(`/api/user/login`, {
-      method: 'POST',
-      body: { email, password }
+      method: "POST",
+      body: { email, password },
     });
 
     if (data.value && data.value.user) {
@@ -48,22 +45,20 @@ async function loginUser(email: string, password: string) {
       useUserStore().logIn(user);
       return user;
     }
-  }
-  catch (e: any) {
+  } catch (e: any) {
     console.error(e.message);
   }
 }
 
 export async function loginGoogleUser(code: string) {
   try {
-    const response = await authGoogle(code);
-    if (response && response.status == 200) {
-      const user = await validateAndTransform(User, response.data as User);
-      useUserStore().logIn(user);
-      return response;
+    const user = await authGoogle(code);
+    if (user) {
+      const transformedUser = await validateAndTransform(User, user as User);
+      useUserStore().logIn(transformedUser);
+      return transformedUser;
     }
-  }
-  catch (e: any) {
+  } catch (e: any) {
     console.error(e.message);
   }
 }
@@ -76,10 +71,8 @@ async function logOutUser() {
     if (data.value && data.value.statusCode == 200) {
       useUserStore().logOut();
       return true;
-    }
-    else return false;
-  }
-  catch (e: any) {
+    } else return false;
+  } catch (e: any) {
     console.error(e.message);
     useUIStore().hideLoading();
   }
@@ -94,12 +87,10 @@ async function validateUser() {
       const user = await validateAndTransform(User, data.value.user as User);
       useUserStore().logIn(user);
       return true;
-    }
-    else {
+    } else {
       return false;
     }
-  }
-  catch (e: any) {
+  } catch (e: any) {
     console.error(e.message);
     useUIStore().hideLoading();
   }
@@ -107,76 +98,80 @@ async function validateUser() {
 
 async function activateUser(token: string) {
   try {
-    const response = await baseAXios.post(`/user/activate/`, {
-      token: token
+    const { data } = await useFetch(`/api/user/activate/`, {
+      method: "POST",
+      body: { token },
     });
-    if (response && response.status == 200) {
+    if (data.value && data.value.statusCode == 200) {
       const userStore = useUserStore();
       if (userStore.user) {
         userStore.user.email_confirmed = true;
       }
-      return response;
+      return true;
     }
-  }
-  catch (e: any) {
+    return false;
+  } catch (e: any) {
     console.error(e.message);
   }
 }
 
 async function validatePasswordResetToken(token: string) {
   try {
-    const response = await baseAXios.post(`/user/password-reset/validate/`, {
-      token: token
+    const { data } = await useFetch(`/api/user/password-reset/validate/`, {
+      method: "POST",
+      body: { token },
     });
-    if (response && response.status == 200) {
-      return response;
+    if (data.value && data.value.statusCode == 200) {
+      return data.value;
     }
-  }
-  catch (e: any) {
+  } catch (e: any) {
     console.error(e.message);
   }
 }
 
 async function resetPasswordRequest(email: string) {
   try {
-    const response = await baseAXios.post(`/user/password-reset/`, {
-      email: email
+    const { data } = await useFetch(`/api/user/password-reset/`, {
+      method: "POST",
+      body: { email },
     });
-    if (response && response.status == 200) {
-      return response;
+    if (data.value && data.value.statusCode == 200) {
+      return true;
     }
-  }
-  catch (e: any) {
+    return false;
+  } catch (e: any) {
     console.error(e.message);
   }
 }
 
 async function passwordChange(token: string, newPassword: string) {
   try {
-    const response = await baseAXios.post(`/user/password-reset/change`, {
-      token: token,
-      password: newPassword
+    const { data } = await useFetch(`/api/user/password-reset/change`, {
+      method: "POST",
+      body: {
+        token: token,
+        password: newPassword,
+      },
     });
-    if (response && response.status == 200) {
-      return response;
+    if (data.value && data.value.statusCode == 200) {
+      return true;
     }
-  }
-  catch (e: any) {
+    return false;
+  } catch (e: any) {
     console.error(e.message);
   }
 }
 
 async function sendActivationEmail() {
   try {
-    const response = await baseAXios.get(`/user/resend-confirmation/`);
-    if (response && response.status == 200) {
-      return response;
+    const { data } = await useFetch(`/api/user/resend-confirmation/`);
+    if (data.value && data.value.statusCode == 200) {
+      return true;
     }
-  }
-  catch (e: any) {
+    return false;
+  } catch (e: any) {
     console.error(e.message);
   }
-
 }
 
 export default {
@@ -189,5 +184,5 @@ export default {
   validatePasswordResetToken,
   resetPasswordRequest,
   passwordChange,
-  sendActivationEmail
-}
+  sendActivationEmail,
+};

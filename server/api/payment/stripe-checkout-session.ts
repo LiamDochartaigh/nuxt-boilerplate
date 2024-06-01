@@ -33,13 +33,14 @@ export default defineEventHandler({
             price: product.price,
             image_URL: product.image_URL,
           };
-          return { product: formattedProduct, quantity: productData.product_quantity };
+          return { product: formattedProduct, quantity: productData.quantity };
         })
       );
+      if(!event.context.user) { throw createError({statusCode: 401, message: "Unauthorized User"}); }
       const stripeSession = await StripeCheckoutSession(event.context.user, formattedProducts, body.success_url, body.cancel_url);
       return {
         statusCode: 200,
-        body: stripeSession.url,
+        stripe_session_url: stripeSession.url,
       };
     } catch (e) {
       if (e instanceof H3Error) {
