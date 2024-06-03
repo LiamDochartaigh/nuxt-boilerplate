@@ -2,11 +2,21 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   css: ["vuetify/lib/styles/main.sass", "@mdi/font/css/materialdesignicons.min.css"],
   build: {
-    transpile: ["vuetify"],
+    transpile: ["vuetify", "class-validator"],
   },
   vite: {
     define: {
       "process.env.DEBUG": false,
+    },
+    optimizeDeps:{
+      include: ['class-validator > class-validator'],
+    },
+    esbuild: {
+      tsconfigRaw: {
+        compilerOptions: {
+          experimentalDecorators: true,
+        },
+      },
     },
   },
   runtimeConfig: {
