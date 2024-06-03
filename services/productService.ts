@@ -23,7 +23,7 @@ export class Product {
 
 export async function getProducts() {
     try {
-        const { data } = await useFetch(`/api/product/`);
+        const { data } = await useFetch(`/api/product`);
         if (data.value && data.value.products) {
             const products: Product[] = await Promise.all(
                 data.value.products.map(async (product) => {

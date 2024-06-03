@@ -5,20 +5,18 @@ import {IOrder} from '../models/orderModel';
 const config = useRuntimeConfig();
 const mailgun = new Mailgun(formData);
 const mg = mailgun.client({ username: 'api', key: config.mailgun_api_key });
-const organzationName = config.organization_name; 
 
 export async function sendNewOrderEmail(to: string, order: IOrder) {
   try {
     await mg.messages.create(config.mailgun_domain, {
-      from: `${organzationName} <${config.mailgun_from}>`,
+      from: `${config.organization_name} <${config.mailgun_from}>`,
       to: to,
-      subject: `Your ${organzationName} Order Is Now Complete`,
+      subject: `Your ${config.organization_name} Order Is Now Complete`,
       template: "new_order_template",
       'h:X-Mailgun-Variables': JSON.stringify(
         { order_details: createHTMLOrderTable(order),
-          organization_name: organzationName,
+          organization_name: config.organization_name,
           customer_details: order.customer_email
-
          }
       )
     });
@@ -80,12 +78,12 @@ function createHTMLOrderTable(order: IOrder) {
 export async function sendWelcomeEmail(to: string) {
   try {
     await mg.messages.create(config.mailgun_domain, {
-      from: `${organzationName} <${config.mailgun_from}>`,
+      from: `${config.organization_name} <${config.mailgun_from}>`,
       to: to,
-      subject: `Welcome To ${organzationName}`,
+      subject: `Welcome To ${config.organization_name}`,
       template: "welcome_template",
       'h:X-Mailgun-Variables': JSON.stringify(
-        { organization_name: organzationName }
+        { organization_name: config.organization_name }
       )
     });
   } catch (error: any) {
@@ -97,13 +95,13 @@ export async function sendWelcomeEmail(to: string) {
 export async function sendConfirmationEmail(to: string, confirmationToken: string) {
   try {
     await mg.messages.create(config.mailgun_domain, {
-      from: `${organzationName} <${config.mailgun_from}>`,
+      from: `${config.organization_name} <${config.mailgun_from}>`,
       to: to,
       subject: 'Please Verify Your Hexeum Account',
       template: "confirmation_template",
       'h:X-Mailgun-Variables': JSON.stringify(
-        { account_confirmation_link: `${config.client_url}activate/?token=${confirmationToken}`,
-        organization_name: organzationName}
+        { account_confirmation_link: `${config.base_url}/activate/?token=${confirmationToken}`,
+        organization_name: config.organization_name}
       )
     });
   } catch (error: any) {
@@ -115,14 +113,13 @@ export async function sendConfirmationEmail(to: string, confirmationToken: strin
 export async function sendPasswordResetEmail(to: string, resetToken: string) {
   try {
     await mg.messages.create(config.mailgun_domain, {
-      from: `${organzationName} <${config.mailgun_from}>`,
+      from: `${config.organization_name} <${config.mailgun_from}>`,
       to: to,
       subject: 'Password Reset Request',
       template: "password_reset_template",
       'h:X-Mailgun-Variables': JSON.stringify(
-        { password_reset_link: `${config.client_url}recovery/?token=${resetToken}`,
-        organization_name: organzationName}
-
+        { password_reset_link: `${config.base_url}/recovery/?token=${resetToken}`,
+        organization_name: config.organization_name}
       )
     });
   } catch (error: any) {

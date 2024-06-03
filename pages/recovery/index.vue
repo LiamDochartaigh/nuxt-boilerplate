@@ -48,12 +48,13 @@
 
 <script setup lang="ts">
 import { onMounted, ref, type Ref } from "vue";
-import userService from "../services/userService";
+import { passwordChange, validatePasswordResetToken } from "~/services/userService";
 import LoadingScreen from "~/components/LoadingScreen.vue";
 import { VForm } from "vuetify/components";
 
 const router = useRouter();
 const route = useRoute();
+const token = ref(route.query.token?.toString() || "");
 
 const isLoading = ref(true);
 const passwordResetValid = ref(false);
@@ -62,12 +63,12 @@ const showPasswordConfirmation = ref(false);
 const newPassword = ref("");
 const confirmPassword = ref("");
 const passwordResetForm: Ref<InstanceType<typeof VForm> | null> = ref(null);
-const token = ref("");
 const error = ref(false);
 const sendingRequest = ref(false);
 const passwordRules = [(v: string) => !!v || "Password is required", (v: string) => v.length >= 8 || "Password must be at least 8 characters"];
 const confirmPasswordRules = [(v: string) => v === newPassword.value || "Passwords do not match"];
 
+const validToken = await validatePasswordResetToken(token.value);
 const passwordChangeSubmit = async () => {
   sendingRequest.value = true;
   const isValid = await passwordResetForm.value?.validate();
@@ -77,7 +78,7 @@ const passwordChangeSubmit = async () => {
     return;
   }
 
-  const response = await userService.passwordChange(token.value, newPassword.value);
+  const response = await passwordChange(token.value, newPassword.value);
   sendingRequest.value = true;
   if (!response) {
     error.value = true;
@@ -88,11 +89,9 @@ const passwordChangeSubmit = async () => {
 
 onMounted(async () => {
   isLoading.value = true;
-  token.value = route.query.token?.toString() || "";
-  const response = await userService.validatePasswordResetToken(token.value);
   isLoading.value = false;
-  if (!response) {
-    router.replace({ path: "password-recovery", query: { error: "invalidToken" } });
+  if (!validToken) {
+    router.replace({ path: "/recovery/new", query: { error: "invalidToken" } });
   }
 });
 </script>

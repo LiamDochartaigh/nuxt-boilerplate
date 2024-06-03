@@ -8,7 +8,7 @@ export async function initiateStripePurchase(products: Product[]) {
         quantity: 1,
       };
     });
-    const { data } = await useFetch(`/api/payment/stripe-checkout-session/`, {
+    const { data } = await useFetch(`/api/payment/stripe-checkout-session`, {
       method: "POST",
       body: {
         products: mappedProducts,

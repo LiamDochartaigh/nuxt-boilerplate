@@ -17,9 +17,10 @@ export class User {
   }
 }
 
-async function registerUser(email: string, password: string) {
+export async function registerUser(email: string, password: string) {
   try {
     const { data } = await useFetch(`/api/user/register`, {
+      cache: 'no-cache',
       method: "POST",
       body: { email, password },
     });
@@ -33,9 +34,10 @@ async function registerUser(email: string, password: string) {
   }
 }
 
-async function loginUser(email: string, password: string) {
+export async function loginUser(email: string, password: string) {
   try {
     const { data } = await useFetch(`/api/user/login`, {
+      cache: 'no-cache',
       method: "POST",
       body: { email, password },
     });
@@ -63,10 +65,10 @@ export async function loginGoogleUser(code: string) {
   }
 }
 
-async function logOutUser() {
+export async function logOutUser() {
   try {
     useUIStore().showLoading();
-    const { data } = await useFetch(`/api/user/logout`);
+    const { data } = await useFetch(`/api/user/logout`, { cache: 'no-cache' });
     useUIStore().hideLoading();
     if (data.value && data.value.statusCode == 200) {
       useUserStore().logOut();
@@ -78,10 +80,10 @@ async function logOutUser() {
   }
 }
 
-async function validateUser() {
+export async function validateUser() {
   try {
     useUIStore().showLoading();
-    const { data } = await useFetch(`/api/user/validate`);
+    const { data } = await useFetch(`/api/user/validate`, { cache: 'no-cache'});
     useUIStore().hideLoading();
     if (data.value && data.value.user) {
       const user = await validateAndTransform(User, data.value.user as User);
@@ -96,9 +98,10 @@ async function validateUser() {
   }
 }
 
-async function activateUser(token: string) {
+export async function activateUser(token: string) {
   try {
-    const { data } = await useFetch(`/api/user/activate/`, {
+    const { data } = await useFetch(`/api/user/activate`, {
+      cache: 'no-cache',
       method: "POST",
       body: { token },
     });
@@ -115,23 +118,28 @@ async function activateUser(token: string) {
   }
 }
 
-async function validatePasswordResetToken(token: string) {
+export async function validatePasswordResetToken(token: string) {
   try {
-    const { data } = await useFetch(`/api/user/password-reset/validate/`, {
+      const { data } = await useFetch(`/api/user/password-reset/validate`, {
+      cache : 'no-cache',
       method: "POST",
       body: { token },
     });
     if (data.value && data.value.statusCode == 200) {
-      return data.value;
+      return true;
+    }
+    else {
+      return false;
     }
   } catch (e: any) {
     console.error(e.message);
   }
 }
 
-async function resetPasswordRequest(email: string) {
+export async function resetPasswordRequest(email: string) {
   try {
-    const { data } = await useFetch(`/api/user/password-reset/`, {
+    const { data } = await useFetch(`/api/user/password-reset`, {
+      cache: 'no-cache',
       method: "POST",
       body: { email },
     });
@@ -144,9 +152,10 @@ async function resetPasswordRequest(email: string) {
   }
 }
 
-async function passwordChange(token: string, newPassword: string) {
+export async function passwordChange(token: string, newPassword: string) {
   try {
     const { data } = await useFetch(`/api/user/password-reset/change`, {
+      cache: 'no-cache',
       method: "POST",
       body: {
         token: token,
@@ -162,9 +171,9 @@ async function passwordChange(token: string, newPassword: string) {
   }
 }
 
-async function sendActivationEmail() {
+export async function sendActivationEmail() {
   try {
-    const { data } = await useFetch(`/api/user/resend-confirmation/`);
+    const { data } = await useFetch(`/api/user/resend-confirmation`, { cache: 'no-cache' });
     if (data.value && data.value.statusCode == 200) {
       return true;
     }

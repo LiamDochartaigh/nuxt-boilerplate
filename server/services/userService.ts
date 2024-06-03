@@ -194,10 +194,8 @@ export async function ValidatePasswordResetToken(token: string) {
     password_reset_token: token,
     password_reset_expires: { $gt: Date.now() },
   });
-  if (!user) {
-    throw new Error("Invalid token or token expired");
-  }
-  return user;
+  if (!user) {return false;}
+  return true;
 }
 
 export async function ChangePassword(token: string, password: string) {

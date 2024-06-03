@@ -9,7 +9,8 @@ const validatePasswordResetRequest = zod.object({
 export default defineEventHandler(async (event) => {
   try {
     const body = await readValidatedBody(event, validatePasswordResetRequest.parse);
-    await ValidatePasswordResetToken(body.token);
+    const isValid = await ValidatePasswordResetToken(body.token);
+    if(!isValid) { throw new Error("Invalid password reset token"); }
     return { statusCode: 200};
   } catch (e) {
     if (e instanceof H3Error) {

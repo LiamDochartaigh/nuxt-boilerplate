@@ -1,4 +1,8 @@
 export default defineNuxtConfig({
+  plugins: [
+    '~/plugins/pinia',
+    '~/plugins/auth',
+  ],
   devtools: { enabled: true },
   css: ["vuetify/lib/styles/main.sass", "@mdi/font/css/materialdesignicons.min.css"],
   build: {
@@ -21,6 +25,7 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     env_status: process.env.ENV,
+    base_url: process.env.BASE_URL,
     organization_name: process.env.ORGANIZATION_NAME,
     db_url: process.env.DB_URL,
     db_name: process.env.DB_NAME,
