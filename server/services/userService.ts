@@ -180,7 +180,7 @@ export async function ResetUserPasswordRequest(email: string) {
   // If the five minutes have not passed since the last password reset email was sent
   if (user.password_reset_expires && user.password_reset_expires.getTime() - 900000 > Date.now()) {
     throw new Error("Password reset token already sent");
-  }
+  // }
 
   const resetToken = GenerateEmailResetToken();
   user.password_reset_token = resetToken;

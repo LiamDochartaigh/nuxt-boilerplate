@@ -83,7 +83,8 @@ const passwordChangeSubmit = async () => {
   if (!response) {
     error.value = true;
   } else {
-    router.push({ path: "/login" });
+    console.log("Password changed successfully.");
+    router.push({ path: "/login", query: { passwordChanged: 'true' }});
   }
 };
 

@@ -9,7 +9,10 @@
             <v-card-text class="text-center">
                 <v-row>
                     <v-col cols="12">
-                        <v-alert v-if="loginError" type="error" dense dismissible @input="loginError = false">
+                        <v-alert v-if="alertMessage" type="success" dense closable>
+                            {{ alertMessage }}
+                        </v-alert>
+                        <v-alert v-if="loginError" type="error" dense closable @input="loginError = false">
                             Email or password is incorrect
                         </v-alert>
                     </v-col>
@@ -32,9 +35,9 @@
                 <v-btn class="hvr-shrink pl-5 pr-5 bg-primary mb-2" size="x-large" rounded type="submit">
                     Login
                 </v-btn>
-                <RouterLink to="/recovery/new" class="hvr-shrink my-2 text-decoration-underline" size="x-large">
+                <NuxtLink to="/recovery/new" class="hvr-shrink my-2 text-decoration-underline" size="x-large">
                     Forgot Password?
-                </RouterLink>
+                </NuxtLink>
             </v-card-actions>
             <div class="d-flex py-3 justify-space-between align-center">
                 <v-divider class="ml-8"></v-divider>
@@ -55,7 +58,10 @@
 import { VForm } from "vuetify/components"
 import userService from '../services/userService';
 import LoadingScreen from '../components/LoadingScreen.vue';
-import GoogleLoginButton from "./GoogleLoginButton.vue";
+
+defineProps({
+    alertMessage: String,
+})
 
 const router = useRouter();
 const loginError = ref(false);

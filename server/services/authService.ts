@@ -18,7 +18,7 @@ export function DefaultCookie(age: number) {
         maxAge: age,
         httpOnly: true,
         secure: true,
-        sameSite: 'strict'
+        sameSite: 'lax'
     } as CookieOptions;
 }
 

@@ -80,11 +80,15 @@ import LoginForm from "../components/LoginForm.vue";
 import RegisterForm from "../components/RegisterForm.vue";
 import NotificationBanner from "../components/NotificationBanner.vue";
 
-const organizationName = import.meta.env.VITE_APP_ORGANIZATION_NAME;
 const authStore = useUserStore();
 const isLoggedIn = computed(() => authStore.isLoggedIn);
 const user = computed(() => authStore.user);
 const router = useRouter();
+
+
+const organizationName = computed(() => {
+  return useRuntimeConfig().organization_name;
+});
 
 const userAvatar = computed(() => {
   if (user.value?.user_avatar_URL) {
