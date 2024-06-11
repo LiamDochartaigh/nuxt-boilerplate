@@ -23,45 +23,30 @@
     <div class="text-center">
       <h1 class="text-h3 font-weight-bold mb-3">Order Not Found</h1>
       <p class="mb-3">Sorry, we could not find your order</p>
-      <span
-        >Please contact support <a :href="`mailto:${supportEmail}`">{{ supportEmail }}</a></span
-      >
+      <span>Please contact support <a :href="`mailto:${supportEmail}`">{{ supportEmail }}</a></span>
     </div>
   </template>
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
-import { GetOrder, Order } from "../services/orderService";
-import { useUIStore } from "../store";
+import { GetOrder } from "../services/orderService";
 
-const order = ref<Order>();
-const orderError = ref(false);
-const uiStore = useUIStore();
-const supportEmail = import.meta.env.VITE_APP_SUPPORT_EMAIL;
 const route = useRoute();
-
-onMounted(async () => {
-  const sessionID = route.query.session_id;
-  if ((!sessionID && typeof sessionID !== "string") || Array.isArray(sessionID)) return;
+const order = await (async () => {
+  const { session_id } = route.query;
+  if ((!session_id && typeof session_id !== "string") || Array.isArray(session_id)) return;
 
   let retries = 0;
   const maxRetries = 4;
   let retrieveOrder = null;
-  uiStore.showLoading();
-
   while (retries < maxRetries && !retrieveOrder) {
-    retrieveOrder = await GetOrder(sessionID);
+    retrieveOrder = await GetOrder(session_id);
     retries++;
     await new Promise((resolve) => setTimeout(resolve, 100));
   }
-  uiStore.hideLoading();
+  return retrieveOrder;
+})();
 
-  if (retrieveOrder) {
-    order.value = retrieveOrder;
-  } else {
-    orderError.value = true;
-    console.error("Failed to retrieve order");
-  }
-});
+const orderError = order ? false : true;
+const supportEmail = import.meta.env.VITE_APP_SUPPORT_EMAIL;
 </script>

@@ -5,7 +5,7 @@
     </div>
     <v-row class="justify-center text-center mt-3">
       <v-card v-for="product in products" :key="product._id" elevation="2" max-width="400px"
-        @click="BuyProduct(product)" class="rounded-xl hvr-shrink">
+        @click="BuyProduct(product)" class="rounded-xl ld-hvr-shrink">
         <v-img class="align-end" :src="product.image_URL">
         </v-img>
         <v-card-title>{{ product.name }}</v-card-title>
@@ -15,13 +15,12 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
 import { Product, getProducts } from "../services/productService";
 import { initiateStripePurchase } from "../services/paymentService";
 import { useUserStore, useUIStore } from "../store";
 
 const uiStore = useUIStore();
-const products = ref<Product[] | undefined>([]);
+const products = await getProducts();
 const userStore = useUserStore();
 
 async function BuyProduct(product: Product) {
@@ -34,8 +33,4 @@ async function BuyProduct(product: Product) {
     userStore.promptLogin();
   }
 }
-
-onMounted(async () => {
-  products.value = await getProducts();
-});
 </script>

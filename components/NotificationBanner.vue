@@ -6,7 +6,7 @@
             <v-btn
             :disabled="buttonDisabled"
             @click="ExecuteAction"
-            class="hvr-shrink bg-primary mr-4"
+            class="ld-hvr-shrink bg-primary mr-4"
             rounded target="_blank">
                 <span>{{ actionComplete === true ? actionFinishedMessage : actionMessage }}</span>
             </v-btn>

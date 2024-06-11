@@ -2,18 +2,18 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted } from 'vue';
-import {loginGoogleUser} from '../../services/userService';
+import { loginGoogleUser } from '../../services/userService';
 
 const router = useRouter();
 const route = useRoute();
 
-onMounted(async () => {
-    const code = route.query.code;
+async function loginUser() {
+    const { code } = route.query;
     if (code && (typeof code === 'string')) {
         await loginGoogleUser(code);
-        router.push({ path: '/home' });
+        router.push({ path: '/' });
     }
-})
+}
 
+loginUser();
 </script>

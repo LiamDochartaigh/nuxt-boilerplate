@@ -6,16 +6,16 @@
 
     <v-app-bar clipped-left app class="pl-3 pr-3">
       <slot name="prepend"></slot>
-      <NuxtLink to="/home">
+      <NuxtLink to="/">
         <v-img alt="Logo" class="shrink" contain :src="logo" transition="scale-transition" width="40" />
       </NuxtLink>
 
       <v-spacer></v-spacer>
 
-      <template v-if="!isLoggedIn">
+      <template v-if="!authStore.isLoggedIn">
         <v-dialog transition="scale-transition" width="500">
           <template v-slot:activator="{ props }">
-            <v-btn class="hvr-shrink bg-primary mr-2" rounded v-bind="props">
+            <v-btn class="ld-hvr-shrink bg-primary mr-2" rounded v-bind="props">
               <span>Sign Up</span>
             </v-btn>
           </template>
@@ -23,7 +23,7 @@
         </v-dialog>
         <v-dialog v-model="authStore.loginPrompt" transition="scale-transition" width="500">
           <template v-slot:activator="{ props }">
-            <v-btn class="hvr-shrink bg-primary mr-2" rounded v-bind="props" target="_blank">
+            <v-btn class="ld-hvr-shrink bg-primary mr-2" rounded v-bind="props" target="_blank">
               <span>Log In</span>
             </v-btn>
           </template>
@@ -31,7 +31,7 @@
           <LoginForm />
         </v-dialog>
       </template>
-      <template v-else-if="isLoggedIn">
+      <template v-else-if="authStore.isLoggedIn">
         <v-menu offset-x offset-y>
           <template v-slot:activator="{ props }">
             <div>
@@ -63,7 +63,7 @@
     <v-footer>
       <v-row justify="center" no-gutters>
         <v-col class="py-2 text-center" cols="12">
-          {{ new Date().getFullYear() }} — {{ organizationName }}
+          {{ new Date().getFullYear() }} — {{ organization_name }}
         </v-col>
       </v-row>
     </v-footer>
@@ -81,14 +81,10 @@ import RegisterForm from "../components/RegisterForm.vue";
 import NotificationBanner from "../components/NotificationBanner.vue";
 
 const authStore = useUserStore();
-const isLoggedIn = computed(() => authStore.isLoggedIn);
 const user = computed(() => authStore.user);
 const router = useRouter();
 
-
-const organizationName = computed(() => {
-  return useRuntimeConfig().organization_name;
-});
+const { organization_name } = useRuntimeConfig().public;
 
 const userAvatar = computed(() => {
   if (user.value?.user_avatar_URL) {

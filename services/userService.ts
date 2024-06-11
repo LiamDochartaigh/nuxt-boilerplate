@@ -115,6 +115,7 @@ export async function activateUser(token: string) {
     return false;
   } catch (e: any) {
     console.error(e.message);
+    return false;
   }
 }
 

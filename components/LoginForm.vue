@@ -1,6 +1,6 @@
 <template>
     <div class="d-flex text-center justify-center">
-    <v-card :max-width="600" :min-width="600">
+    <v-card class="ld-small-card">
         <v-card-title class="text-h5  text-center bg-primary">
             Log In
         </v-card-title>
@@ -32,10 +32,10 @@
                 </v-row>
             </v-card-text>
             <v-card-actions class="justify-center flex-column">
-                <v-btn class="hvr-shrink pl-5 pr-5 bg-primary mb-2" size="x-large" rounded type="submit">
+                <v-btn class="ld-hvr-shrink pl-5 pr-5 bg-primary mb-2" size="x-large" rounded type="submit">
                     Login
                 </v-btn>
-                <NuxtLink to="/recovery/new" class="hvr-shrink my-2 text-decoration-underline" size="x-large">
+                <NuxtLink to="/recovery/new" class="ld-hvr-shrink my-2 text-decoration-underline" size="x-large">
                     Forgot Password?
                 </NuxtLink>
             </v-card-actions>
@@ -92,7 +92,7 @@ const loginSubmit = async () => {
     sendingRequest.value = false;
     if (!response) { loginError.value = true; }
     else {
-        router.push({ path: '/home' });
+        router.push({ path: '/' });
     }
 };
 

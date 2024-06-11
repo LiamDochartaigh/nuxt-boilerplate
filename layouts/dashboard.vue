@@ -48,7 +48,7 @@ const menuItems = [
   {
     title: "Home",
     icon: "mdi-chart-donut",
-    path: '/home',
+    path: '/',
   }
 ];
 

@@ -1,5 +1,5 @@
 <template>
-  <v-row v-if="!isLoading" class="text-center justify-center">
+  <v-row class="text-center justify-center">
     <v-col v-if="accountActivated">
       <h1 class="text-h3 font-weight-bold mb-3">Account Activated</h1>
       <p>Your account has been activated. You can now login to your account.</p>
@@ -13,22 +13,10 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
 import userService from "../services/userService";
 
-const isLoading = ref(true);
-const accountActivated = ref(false);
 const route = useRoute();
-
-onMounted(async () => {
-  isLoading.value = true;
-  const token = route.query.token?.toString() || "";
-  const response = await userService.activateUser(token);
-  isLoading.value = false;
-  if (response) {
-    accountActivated.value = true;
-  } else {
-    accountActivated.value = false;
-  }
-});
+const token = route.query.token?.toString() || "";
+const response = await userService.activateUser(token);
+const accountActivated = response ? true : false;
 </script>

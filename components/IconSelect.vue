@@ -2,7 +2,7 @@
   <div>
     <v-dialog v-model="dialog" scrollable max-width="800" :style="{'max-height': '600px'}">
       <template v-slot:activator="{ props }">
-        <v-btn class="hvr-shrink pl-5 pr-5" x-large rounded color="primary" v-bind="props">
+        <v-btn class="ld-hvr-shrink pl-5 pr-5" x-large rounded color="primary" v-bind="props">
           Choose Icon
         </v-btn>
       </template>
