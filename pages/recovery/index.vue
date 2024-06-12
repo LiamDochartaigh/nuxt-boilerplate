@@ -28,18 +28,16 @@
           </v-row>
         </v-card-text>
         <v-card-actions class="justify-center">
-          <v-btn :disabled="error" class="ld-hvr-shrink pl-5 pr-5 bg-primary mb-2" size="x-large" rounded type="submit"> Reset Password
+          <v-btn :loading="sendingRequest" :disabled="error" class="ld-hvr-shrink pl-5 pr-5 bg-primary mb-2" size="x-large" rounded type="submit"> Reset Password
           </v-btn>
         </v-card-actions>
       </v-form>
-      <LoadingScreen v-if="sendingRequest" :contained="true" :dark="false" />
     </v-card>
   </div>
 </template>
 
 <script setup lang="ts">
 import { passwordChange, validatePasswordResetToken } from "~/services/userService";
-import LoadingScreen from "~/components/LoadingScreen.vue";
 import { VForm } from "vuetify/components";
 
 definePageMeta({
@@ -77,7 +75,6 @@ const passwordChangeSubmit = async () => {
   if (!response) {
     error.value = true;
   } else {
-    console.log("Password changed successfully.");
     router.push({ path: "/login", query: { passwordChanged: 'true' } });
   }
 };

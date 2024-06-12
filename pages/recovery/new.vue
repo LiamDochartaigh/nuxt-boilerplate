@@ -22,11 +22,10 @@
           </v-row>
         </v-card-text>
         <v-card-actions class="justify-center">
-          <v-btn v-if="!requestSent" class="ld-hvr-shrink pl-5 pr-5 bg-primary mb-2" size="x-large" rounded type="submit">
+          <v-btn :loading="sendingRequest" :disabled="requestSent" class="ld-hvr-shrink pl-5 pr-5 bg-primary mb-2" size="x-large" rounded type="submit">
             Reset Password </v-btn>
         </v-card-actions>
       </v-form>
-      <LoadingScreen v-if="sendingRequest" :contained="true" :dark="false" />
     </v-card>
   </div>
 </template>
@@ -34,7 +33,6 @@
 <script setup lang="ts">
 import { VForm } from "vuetify/components";
 import { resetPasswordRequest } from "~/services/userService";
-import LoadingScreen from "~/components/LoadingScreen.vue";
 
 definePageMeta({
   layout: 'login'
@@ -52,9 +50,9 @@ const success = ref(false);
 const passwordResetSubmit = async () => {
   const isValid = await passwordResetForm.value?.validate();
   if (isValid?.valid) {
-    requestSent.value = true;
     sendingRequest.value = true;
     await resetPasswordRequest(accountEmail.value);
+    requestSent.value = true;
     sendingRequest.value = false;
     error.value = false;
     success.value = true;

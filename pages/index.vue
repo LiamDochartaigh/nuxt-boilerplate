@@ -17,17 +17,15 @@
 <script setup lang="ts">
 import { Product, getProducts } from "../services/productService";
 import { initiateStripePurchase } from "../services/paymentService";
-import { useUserStore, useUIStore } from "../store";
+import { useUserStore } from "../store";
 
-const uiStore = useUIStore();
 const products = await getProducts();
 const userStore = useUserStore();
+const config = useRuntimeConfig();
 
 async function BuyProduct(product: Product) {
   const products = [product];
-  uiStore.showLoading();
-  const stripeCheckoutURL = await initiateStripePurchase(products);
-  uiStore.hideLoading();
+  const stripeCheckoutURL = await initiateStripePurchase(products, config.public.base_url);
   if (stripeCheckoutURL) { window.location.href = stripeCheckoutURL; }
   else {
     userStore.promptLogin();

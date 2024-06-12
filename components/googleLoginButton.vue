@@ -1,5 +1,5 @@
 <template>
-    <v-btn @click="clickHandler" class="hvr-shrink pl-5 pr-5 bg-white mb-2" size="x-large" rounded type="submit">
+    <v-btn :loading="btnLoading" @click="loginGoogle" class="hvr-shrink pl-5 pr-5 bg-white mb-2" size="x-large" rounded type="submit">
         <v-icon class="mr-2">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
                 <path fill="#EA4335"
@@ -18,12 +18,17 @@
 </template>
 
 <script setup lang="ts">
-const props = defineProps<{
-    onClick: () => void;
-}>();
 
-function clickHandler() {
-    props.onClick();
-}
+const btnLoading = ref(false);
+const config = useRuntimeConfig();
 
+const loginGoogle = async () => {
+    btnLoading.value = true;
+    const clientId = config.public.google_client_id;
+    const redirectUri = config.public.google_redirect_uri;
+    const scope = encodeURIComponent('https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile');
+    const responseType = 'code';
+    const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scope}&response_type=${responseType}&prompt=consent`;
+    window.location.href = authUrl;
+};
 </script>

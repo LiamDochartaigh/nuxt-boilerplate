@@ -1,13 +1,13 @@
 export async function authGoogle(code: string) {
   try {
-    const {data} = await useFetch(`/api/auth/google`, {
+    const { user } = await $fetch(`/api/auth/google`, {
       method: "POST",
       body: {
         code: code,
       },
     });
-    if (data.value && data.value.statusCode == 200) {
-      return data.value.user;
+    if (user) {
+      return user;
     }
   } catch (e: any) {
     console.error(e.message);

@@ -8,7 +8,7 @@
                 <v-card-text class="text-center">
                     <v-row>
                         <v-col cols="12">
-                            <v-alert v-if="registerError" type="error" dense dismissible @input="registerError = false">
+                            <v-alert v-if="registerError" type="error" dense closable @input="registerError = false">
                                 This email address is already registered. If this is your email address, please log in
                                 or
                                 reset
@@ -32,7 +32,7 @@
                     </v-row>
                 </v-card-text>
                 <v-card-actions class="justify-center">
-                    <v-btn class="ld-hvr-shrink pl-5 pr-5 bg-primary mb-2" size="x-large" type="submit" rounded>
+                    <v-btn :loading="sendingRequest" class="ld-hvr-shrink pl-5 pr-5 bg-primary mb-2" size="x-large" type="submit" rounded>
                         Register
                     </v-btn>
                 </v-card-actions>
@@ -42,10 +42,9 @@
                     <v-divider class="mr-8"></v-divider>
                 </div>
                 <v-card-actions class="justify-center flex-column mb-2">
-                    <GoogleLoginButton :onClick="loginGoogle" />
+                    <GoogleLoginButton />
                 </v-card-actions>
             </v-form>
-            <LoadingScreen v-if="sendingRequest" :contained="true" :dark="false" />
         </v-card>
     </div>
 </template>
@@ -53,7 +52,6 @@
 <script setup lang="ts">
 import { VForm } from "vuetify/components";
 import userService from "../services/userService";
-import LoadingScreen from "../components/LoadingScreen.vue";
 
 const registerError = ref(false);
 const signupValid = ref(false);
@@ -83,14 +81,4 @@ const signUpSubmit = async () => {
         if (!response) { registerError.value = true; }
     }
 };
-
-const loginGoogle = async () => {
-    const clientId = import.meta.env.VITE_APP_GOOGLE_CLIENT_ID;
-    const redirectUri = encodeURIComponent(import.meta.env.VITE_APP_GOOGLE_REDIRECT_URL);
-    const scope = encodeURIComponent('https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile');
-    const responseType = 'code';
-    const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scope}&response_type=${responseType}&prompt=consent`;
-    window.location.href = authUrl;
-};
-
 </script>

@@ -96,7 +96,7 @@ const userAvatar = computed(() => {
 const logOutAction = async function () {
   const loggedOut = await userService.logOutUser();
   if (loggedOut) {
-    router.push({ path: '/home' });
+    router.push({ path: '/' });
   }
 };
 

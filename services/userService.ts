@@ -82,9 +82,7 @@ export async function logOutUser() {
 
 export async function validateUser() {
   try {
-    useUIStore().showLoading();
     const { data } = await useFetch(`/api/user/validate`, { cache: 'no-cache'});
-    useUIStore().hideLoading();
     if (data.value && data.value.user) {
       const user = await validateAndTransform(User, data.value.user as User);
       useUserStore().logIn(user);
@@ -94,7 +92,6 @@ export async function validateUser() {
     }
   } catch (e: any) {
     console.error(e.message);
-    useUIStore().hideLoading();
   }
 }
 

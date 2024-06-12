@@ -4,9 +4,9 @@ import {OAuth2Client} from 'google-auth-library';
 const config = useRuntimeConfig();
 
 const oauth2Client = new OAuth2Client(
-    config.google_client_id,
+    config.public.google_client_id,
     config.google_client_secret,
-    config.google_redirect_uri
+    config.public.google_redirect_uri
 );
 
 export async function AuthGoogle(code: string) {

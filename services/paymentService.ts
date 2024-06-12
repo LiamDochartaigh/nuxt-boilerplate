@@ -1,6 +1,6 @@
 import { Product } from "./productService";
 
-export async function initiateStripePurchase(products: Product[]) {
+export async function initiateStripePurchase(products: Product[], base_url: string) {
   try {
     const mappedProducts = products.map((product) => {
       return {
@@ -8,16 +8,16 @@ export async function initiateStripePurchase(products: Product[]) {
         quantity: 1,
       };
     });
-    const { data } = await useFetch(`/api/payment/stripe-checkout-session`, {
+    const { stripe_session_url } = await $fetch(`/api/payment/stripe-checkout-session`, {
       method: "POST",
       body: {
         products: mappedProducts,
-        success_url: import.meta.env.VITE_APP_BASE_URL + "order-complete",
-        cancel_url: import.meta.env.VITE_APP_BASE_URL,
+        success_url: base_url + "/order-complete",
+        cancel_url: base_url,
       },
     });
-    if (data.value && data.value.stripe_session_url) {
-      return data.value.stripe_session_url;
+    if (stripe_session_url) {
+      return stripe_session_url;
     }
   } catch (e: any) {
     console.error(e.message);

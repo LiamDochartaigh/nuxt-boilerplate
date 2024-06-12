@@ -2,9 +2,11 @@ import { StripeCheckoutComplete } from "~/server/services/paymentService";
 
 export default defineEventHandler(async (event) => {
     try{
+        event.node.req.headers
         const signature = getHeader(event, "stripe-signature");
         if(!signature) { throw createError({ statusCode: 400, message: "Validation Error" }); }
-        const body = readRawBody(event).toString();
+        const body = (await readRawBody(event))?.toString();
+        if(!body) { throw createError({ statusCode: 400, message: "Validation Error" }); }
         await StripeCheckoutComplete(body, signature);
         return {statusCode: 200}
 
