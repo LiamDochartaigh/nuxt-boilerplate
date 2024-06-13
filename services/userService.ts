@@ -19,14 +19,14 @@ export class User {
 
 export async function registerUser(email: string, password: string) {
   try {
-    const { data } = await useFetch(`/api/user/register`, {
+    const { user } = await $fetch(`/api/user/register`, {
       cache: 'no-cache',
       method: "POST",
       body: { email, password },
     });
-    if (data.value && data.value?.user) {
-      const user = await validateAndTransform(User, data.value.user as User);
-      useUserStore().logIn(user);
+    if (user) {
+      const transformedUser = await validateAndTransform(User, user as User);
+      useUserStore().logIn(transformedUser);
       return user;
     }
   } catch (e: any) {
@@ -36,15 +36,15 @@ export async function registerUser(email: string, password: string) {
 
 export async function loginUser(email: string, password: string) {
   try {
-    const { data } = await useFetch(`/api/user/login`, {
+    const { user } = await $fetch(`/api/user/login`, {
       cache: 'no-cache',
       method: "POST",
       body: { email, password },
     });
 
-    if (data.value && data.value.user) {
-      const user = await validateAndTransform(User, data.value.user as User);
-      useUserStore().logIn(user);
+    if (user) {
+      const transformedUser = await validateAndTransform(User, user as User);
+      useUserStore().logIn(transformedUser);
       return user;
     }
   } catch (e: any) {
@@ -68,9 +68,9 @@ export async function loginGoogleUser(code: string) {
 export async function logOutUser() {
   try {
     useUIStore().showLoading();
-    const { data } = await useFetch(`/api/user/logout`, { cache: 'no-cache' });
+    const { statusCode } = await $fetch(`/api/user/logout`, { cache: 'no-cache' });
     useUIStore().hideLoading();
-    if (data.value && data.value.statusCode == 200) {
+    if (statusCode == 200) {
       useUserStore().logOut();
       return true;
     } else return false;
@@ -136,12 +136,12 @@ export async function validatePasswordResetToken(token: string) {
 
 export async function resetPasswordRequest(email: string) {
   try {
-    const { data } = await useFetch(`/api/user/password-reset`, {
+    const { statusCode } = await $fetch(`/api/user/password-reset`, {
       cache: 'no-cache',
       method: "POST",
       body: { email },
     });
-    if (data.value && data.value.statusCode == 200) {
+    if (statusCode == 200) {
       return true;
     }
     return false;
@@ -152,7 +152,7 @@ export async function resetPasswordRequest(email: string) {
 
 export async function passwordChange(token: string, newPassword: string) {
   try {
-    const { data } = await useFetch(`/api/user/password-reset/change`, {
+    const { statusCode } = await $fetch(`/api/user/password-reset/change`, {
       cache: 'no-cache',
       method: "POST",
       body: {
@@ -160,7 +160,7 @@ export async function passwordChange(token: string, newPassword: string) {
         password: newPassword,
       },
     });
-    if (data.value && data.value.statusCode == 200) {
+    if (statusCode == 200) {
       return true;
     }
     return false;
@@ -171,8 +171,8 @@ export async function passwordChange(token: string, newPassword: string) {
 
 export async function sendActivationEmail() {
   try {
-    const { data } = await useFetch(`/api/user/resend-confirmation`, { cache: 'no-cache' });
-    if (data.value && data.value.statusCode == 200) {
+    const { statusCode } = await $fetch(`/api/user/resend-confirmation`, { cache: 'no-cache' });
+    if (statusCode == 200) {
       return true;
     }
     return false;

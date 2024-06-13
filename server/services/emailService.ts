@@ -9,7 +9,7 @@ const mg = mailgun.client({ username: 'api', key: config.mailgun_api_key });
 export async function sendNewOrderEmail(to: string, order: IOrder) {
   try {
     await mg.messages.create(config.mailgun_domain, {
-      from: `${config.organization_name} <${config.mailgun_from}>`,
+      from: `${config.public.organization_name} <${config.mailgun_from}>`,
       to: to,
       subject: `Your ${config.public.organization_name} Order Is Now Complete`,
       template: "new_order_template",
